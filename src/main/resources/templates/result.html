@@ -1,0 +1,187 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Arama:</title>
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+	crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"
+	integrity="sha256-h0cGsrExGgcZtSZ/fRz4AwV+Nn6Urh/3v3jFRQ0w9dQ="
+	crossorigin="anonymous"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+	integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+	crossorigin="anonymous"></script>
+<script
+	src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+	integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+	crossorigin="anonymous"></script>
+<style type="text/css">
+td, th {
+	padding: 15px;
+}
+</style>
+<script type="text/javascript" th:src="@{js/result.js}"
+	src="../static/js/result.js"></script>
+</head>
+<body>
+<a href="/redirectToHome"><button class="btn btn-primary ml-5 mt-5">Ana
+						Sayfa</button></a>
+	<div class="container" th:switch="${type}">
+		<div th:case="'1'">
+			<table>
+				<thead>
+					<tr>
+						<th>Kitap Adı</th>
+						<th>Kitap Alt Adı</th>
+						<th>Kitap Seri Adı</th>
+						<th>Açıklama</th>
+						<th>Yazar</th>
+						<th>Yayınevi</th>
+						<th>Düzenle</th>
+						<th>Sil</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="book: ${bookResults}">
+						<td><a th:text="${book.bookTitle}"
+							th:href="@{/book/}+${book.bookTitle}"></a></td>
+
+						<td th:text="${book.bookSubTitle}"></td>
+						<td th:text="${book.bookSerialName}"></td>
+						<td th:text="${book.bookDescription}"></td>
+
+						<td><a th:text="${book.author.authorName}"
+							th:href="@{/author/}+${book.author.authorName}"></a></td>
+
+						<td><a th:text="${book.publisher.publisherName}"
+							th:href="@{/publisher/}+${book.publisher.publisherName}"></a></td>
+
+						<td><a th:href="@{/findOneBook/(id=${book.id})}"
+							class="btn btn-info" name="eBtn">Düzenle</a></td>
+						<td>
+							<form th:action="@{/deleteBook}" method="post">
+								<input type="hidden" id="id" name="id" th:value="${book.id}" />
+								<input type="submit" class="btn btn-danger" value="Sil" />
+							</form>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div th:case="'2'">
+			<table>
+				<thead>
+					<tr>
+						<th>Yazar Adı</th>
+						<th>Açıklama</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="author: ${authorResults}">
+						<td><a th:text="${author.authorName}"
+							th:href="@{/author/}+${author.authorName}"></a></td>
+						<td th:text="${author.authorDescription}"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div th:case="'3'">
+			<table>
+				<thead>
+					<tr>
+						<th>Yayınevi Adı</th>
+						<th>Açıklama</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="publisher: ${publisherResults}">
+						<td><a th:text="${publisher.publisherName}"
+							th:href="@{/publisher/}+${publisher.publisherName}"></a></td>
+						<td th:text="${publisher.publisherDescription}"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+
+	<!-- Book Modal -->
+	<div class="myForm">
+		<div id="bookModal" class="modal fade" role="dialog">
+			<div class="modal-dialog">
+
+				<!-- Modal content-->
+				<div class="modal-content">
+					<div class="modal-body">
+						<div class="container my-3">
+							<div class="row">
+								<div class="col-md-12 mx-auto">
+									<h2>Düzenle</h2>
+									<form th:action="@{/saveBook}" method="post">
+										<div class="form-row">
+											<div class="col-md-6 form-group">
+												<input type="hidden" class="form-control" id="id" name="id"
+													value="" /> <label>Kitap Adı</label> <input type="text"
+													class="form-control" id="bookTitle" name="bookTitle"
+													value="" />
+											</div>
+											<div class="col-md-6 form-group">
+												<label>Kitap Alt Adı</label> <input type="text"
+													class="form-control" id="bookSubTitle" name="bookSubTitle"
+													value="" />
+											</div>
+											<div class="col-md-6 form-group">
+												<label>Kitap Seri Adı</label> <input type="text"
+													class="form-control" id="bookSerialName"
+													name="bookSerialName" value="" />
+											</div>
+											<div class="col-md-6 form-group">
+												<label>Açıklama</label> <input type="text"
+													class="form-control" id="bookDescription"
+													name="bookDescription" value="" />
+											</div>
+
+											<div class="col-md-6 form-group">
+												<label>Yazar</label> <br /> <select id="authorId"
+													name="authorId" class="form-control">
+													<option th:each="author: ${authors}"
+														th:value="${author.authorId}"
+														th:utext="${author.authorName}" />
+												</select>
+											</div>
+											<div class="col-md-6 form-group">
+												<label>Yayınevi</label> <br /> <select id="publisherId"
+													name="publisherId" class="form-control">
+													<option th:each="publisher: ${publishers}"
+														th:value="${publisher.publisherId}"
+														th:utext="${publisher.publisherName}" />
+												</select>
+											</div>
+
+											<div class="col-md-6 form-group">
+												<label>ISBN</label> <input type="number"
+													class="form-control" id="ISBN" name="ISBN" value="" />
+											</div>
+										</div>
+										<input type="submit" class="btn btn-primary btn-block mt-3"
+											value="Kaydet" />
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Kapat</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
